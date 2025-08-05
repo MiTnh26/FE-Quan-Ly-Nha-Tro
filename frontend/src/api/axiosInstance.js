@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:9999', // hoặc từ biến môi trường
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:9999', // Sử dụng biến môi trường hoặc fallback về localhost
     headers: {
         'Content-Type': 'application/json',
     },
