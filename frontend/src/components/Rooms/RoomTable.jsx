@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
 import {
     Box,
     IconButton,
@@ -281,21 +280,22 @@ const RoomForm = ({ initialValues, onSubmit, onCancel, isSaving, allUsers = [] }
     const handleImageUpload = async (files, push) => {
         setIsUploading(true);
         try {
-            const uploadPromises = Array.from(files).map(async (file) => {
-                const formData = new FormData();
-                formData.append('image', file);
-                const response = await axios.post('http://localhost:9999/api/upload', formData, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
+            const imagePromises = Array.from(files).map(async (file) => {
+                // Convert file to base64
+                const toBase64 = file => new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = error => reject(error);
                 });
-                return response.data.imageUrl;
+                return await toBase64(file);
             });
-            const imageUrls = await Promise.all(uploadPromises);
+            const imageUrls = await Promise.all(imagePromises);
             imageUrls.forEach((url) => push(url));
             toast.success(`Đã tải lên ${imageUrls.length} ảnh thành công!`);
         } catch (error) {
             console.error('Lỗi khi tải ảnh:', error);
-            const errorMessage = error.response?.data?.message || 'Tải ảnh lên thất bại!';
-            toast.error(errorMessage);
+            toast.error('Tải ảnh lên thất bại!');
         } finally {
             setIsUploading(false);
         }
