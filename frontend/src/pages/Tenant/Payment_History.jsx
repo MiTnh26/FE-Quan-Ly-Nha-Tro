@@ -112,17 +112,8 @@ const Payment_History = () => {
   );
 
   const handleDownloadPDF = (invoiceId) => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("Không tìm thấy token. Vui lòng đăng nhập lại!");
-      return;
-    }
-
-    axios
-      .get(`${API_URL}/${invoiceId}/download`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    axiosInstance
+      .get(`/api/history/${invoiceId}/download`, {
         responseType: "blob",
       })
       .then((response) => {
