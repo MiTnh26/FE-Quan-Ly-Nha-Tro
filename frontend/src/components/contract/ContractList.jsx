@@ -25,7 +25,7 @@ import UpdateContractStatusModal from './UpdateContractStatusModal';
 import { Plus } from 'react-bootstrap-icons';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
-import axios from 'axios';
+import axiosInstance from '../../api/axiosInstance';
 import AddUserInContract from './AddUserInContract';
 
 const ContractList = () => {
@@ -208,7 +208,7 @@ const ContractList = () => {
 
     const handleDownloadPdf = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:9999/contracts/${id}/pdf`, {
+            const response = await axiosInstance.get(`/contracts/${id}/pdf`, {
                 responseType: 'blob',
             });
 

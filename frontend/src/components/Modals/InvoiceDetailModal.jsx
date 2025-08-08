@@ -26,10 +26,8 @@ import {
   CheckCircle,
   Paid,
 } from "@mui/icons-material";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 import { toast } from "react-toastify";
-
-const API_URL = "http://localhost:9999/api/history";
 
 const modalStyle = {
   position: "absolute",
@@ -80,9 +78,7 @@ const InvoiceDetailModal = ({ invoiceId, open, onClose }) => {
         }
 
         try {
-          const response = await axios.get(`${API_URL}/${invoiceId}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const response = await axiosInstance.get(`/api/history/${invoiceId}`);
           setInvoice(response.data);
         } catch (err) {
           console.error("Lỗi khi fetch chi tiết hóa đơn:", err);

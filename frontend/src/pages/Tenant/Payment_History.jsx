@@ -3,12 +3,10 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { MaterialReactTable } from "material-react-table";
 import { Box, IconButton, Tooltip, Button, Typography, Chip } from "@mui/material";
 import { Visibility, PictureAsPdf } from "@mui/icons-material";
-import axios from "axios";
+import axiosInstance from "../../api/axiosInstance";
 import { Formik, Form, Field } from "formik";
 import { toast } from "react-toastify";
 import InvoiceDetailModal from "../../components/Modals/InvoiceDetailModal";
-
-const API_URL = "http://localhost:9999/api/history";
 
 const Payment_History = () => {
   const [data, setData] = useState([]);
@@ -39,11 +37,8 @@ const Payment_History = () => {
     };
 
     try {
-      const response = await axios.get(API_URL, {
+      const response = await axiosInstance.get('/api/history', {
         params,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
       });
       setData(response.data.invoices);
       setRowCount(response.data.totalItems);
@@ -91,7 +86,7 @@ const Payment_History = () => {
         Cell: ({ cell }) =>
           new Date(cell.getValue()).toLocaleDateString("vi-VN"),
       },
-    
+
       {
         accessorKey: "paid_date",
         header: "Ngày thanh toán",
@@ -103,7 +98,7 @@ const Payment_History = () => {
             : "Chưa có";
         },
       },
-      
+
       {
         accessorKey: "payment_status",
         header: "Trạng thái",
