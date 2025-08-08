@@ -1,5 +1,4 @@
 // src/api/userAPI.js
-import axios from "axios";
 import axiosInstance from './axiosInstance';
 
 export const getAllUsers = () => {

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { MaterialReactTable } from "material-react-table";
 import { Box, IconButton, Tooltip, Button, Typography, Chip } from "@mui/material";
 import { Visibility, PictureAsPdf } from "@mui/icons-material";
-import axiosInstance from "../../api/axiosInstance";
+import { axiosInstanceWithApi } from "../../api/axiosInstance";
 import { Formik, Form, Field } from "formik";
 import { toast } from "react-toastify";
 import InvoiceDetailModal from "../../components/Modals/InvoiceDetailModal";
@@ -37,9 +37,7 @@ const Payment_History = () => {
     };
 
     try {
-      const response = await axiosInstance.get('/api/history', {
-        params,
-      });
+      const response = await axiosInstanceWithApi.get('/history', { params });
       setData(response.data.invoices);
       setRowCount(response.data.totalItems);
       setIsError(false);
@@ -112,8 +110,17 @@ const Payment_History = () => {
   );
 
   const handleDownloadPDF = (invoiceId) => {
-    axiosInstance
-      .get(`/api/history/${invoiceId}/download`, {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Không tìm thấy token. Vui lòng đăng nhập lại!");
+      return;
+    }
+
+    axios
+      .get(`${API_URL}/${invoiceId}/download`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         responseType: "blob",
       })
       .then((response) => {
